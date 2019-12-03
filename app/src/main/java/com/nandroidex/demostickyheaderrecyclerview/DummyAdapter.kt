@@ -1,35 +1,96 @@
 package com.nandroidex.demostickyheaderrecyclerview
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
-class DummyAdapter(private val dummyList: List<Dummy>, private val context: Context) :
-    RecyclerView.Adapter<DummyAdapter.ViewHolder>() {
+class DummyAdapter(private val dummyList: List<*>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_dummy, parent, false)
-        return ViewHolder(view)
+    private val headerView = 0
+    private val dateView = 1
+    private val itemView = 2
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            headerView -> {
+                HeaderViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.list_item_header,
+                        parent,
+                        false
+                    )
+                )
+            }
+            dateView -> {
+                DateViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.list_item_date,
+                        parent,
+                        false
+                    )
+                )
+            }
+            else -> {
+                ItemViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.list_item_dummy,
+                        parent,
+                        false
+                    )
+                )
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val video = dummyList[position]
-        holder.tvHeader.text = video.date
-        holder.tvDate.text = video.date
-        if (position > 0) {
-            val prevDate = dummyList[position - 1].date
-            if (video.date != prevDate) {
-                holder.tvHeader.visibility = View.VISIBLE
-            } else {
-                holder.tvHeader.visibility = View.GONE
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when {
+            getItemViewType(position) == headerView -> {
+                onBindHeaderViewHolder()
             }
-        } else {
-            holder.tvHeader.visibility = View.VISIBLE
+            getItemViewType(position) == dateView -> {
+                val dateViewHolder: DateViewHolder = holder as DateViewHolder
+                onBindDateViewHolder(dateViewHolder, position)
+            }
+            else -> {
+                val itemViewHolder: ItemViewHolder = holder as ItemViewHolder
+                onBindItemViewHolder(itemViewHolder, position)
+            }
+        }
+    }
+
+    private fun onBindHeaderViewHolder() {
+        //NO DATA
+    }
+
+    private fun onBindDateViewHolder(holder: DateViewHolder, position: Int) {
+        val dummy: Date = dummyList[position] as Date
+        holder.tvHeader.text = dummy.date
+    }
+
+    private fun onBindItemViewHolder(holder: ItemViewHolder, position: Int) {
+        val dummy: Dummy = dummyList[position] as Dummy
+        Picasso.get().load(dummy.thumbnail).into(holder.ivThumbnail)
+        holder.tvName.text = dummy.name
+        holder.tvDate.text = dummy.date
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when {
+            dummyList[position] is Header -> {
+                headerView
+            }
+            dummyList[position] is Date -> {
+                dateView
+            }
+            else -> {
+                itemView
+            }
         }
     }
 
@@ -37,8 +98,15 @@ class DummyAdapter(private val dummyList: List<Dummy>, private val context: Cont
         return dummyList.size
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvDate: AppCompatTextView = itemView.findViewById(R.id.tvDate)
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvHeader: AppCompatTextView = itemView.findViewById(R.id.tvHeader)
+    }
+
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvDate: AppCompatTextView = itemView.findViewById(R.id.tvDate)
+        val ivThumbnail: AppCompatImageView = itemView.findViewById(R.id.ivThumbnail)
+        val tvName: AppCompatTextView = itemView.findViewById(R.id.tvName)
     }
 }
