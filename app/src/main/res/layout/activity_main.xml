@@ -5,11 +5,24 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItems"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/list_item_dummy" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.futuremind.recyclerviewfastscroll.FastScroller
+        android:id="@+id/fastScroller"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_dummy" />
+        android:layout_gravity="end"
+        android:orientation="vertical" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvHeaderStrip"

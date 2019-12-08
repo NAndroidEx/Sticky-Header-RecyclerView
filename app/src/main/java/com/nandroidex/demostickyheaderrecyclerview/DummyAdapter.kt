@@ -7,10 +7,11 @@ import androidx.appcompat.widget.AppCompatImageView
 
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider
 import com.squareup.picasso.Picasso
 
 class DummyAdapter(private val dummyList: List<*>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), SectionTitleProvider {
 
     private val headerView = 0
     private val dateView = 1
@@ -108,5 +109,10 @@ class DummyAdapter(private val dummyList: List<*>) :
         val tvDate: AppCompatTextView = itemView.findViewById(R.id.tvDate)
         val ivThumbnail: AppCompatImageView = itemView.findViewById(R.id.ivThumbnail)
         val tvName: AppCompatTextView = itemView.findViewById(R.id.tvName)
+    }
+
+    override fun getSectionTitle(position: Int): String {
+//        val date = dummyList[position] as Date
+        return "DATE"
     }
 }

@@ -104,6 +104,9 @@ class MainActivity : AppCompatActivity() {
         rvItems.adapter = DummyAdapter(dummyList)
         layoutManager = rvItems.layoutManager as LinearLayoutManager
         rvItems.addOnScrollListener(scrollListener)
+
+        fastScroller.setRecyclerView(rvItems)
+        fastScroller.setViewProvider(CustomScrollerViewProvider())
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
